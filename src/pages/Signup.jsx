@@ -1,0 +1,239 @@
+import { useState } from 'react';
+// eslint-disable-next-line no-unused-vars
+import { motion } from 'framer-motion';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+import { ArrowLeft, User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+
+const Signup = () => {
+  const [isArtisan, setIsArtisan] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const role = isArtisan ? 'artisan' : 'buyer';
+      const response = await axios.post('/api/auth/register', {
+        name,
+        email,
+        password,
+        role
+      });
+
+      const { token } = response.data;
+      if (token) {
+        localStorage.setItem('token', token);
+        const decoded = jwtDecode(token);
+        if (decoded.role === 'buyer') {
+          navigate('/');
+        } else if (decoded.role === 'artisan') {
+          navigate('/onboarding');
+        }
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-earth-50 flex items-center justify-center pt-32 pb-12 px-6">
+      {/* Background Decorative */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-forest-200/40 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-terracotta-200/40 blur-3xl" />
+      </div>
+
+      <div className="w-full max-w-5xl bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden relative z-10 border border-earth-100">
+
+        {/* Left Side - Image/Branding */}
+        <div className="md:w-5/12 bg-earth-900 text-earth-50 flex flex-col justify-between p-10 relative overflow-hidden hidden md:flex">
+          <div className="absolute inset-0 z-0 opacity-40">
+            <img
+              src="https://images.unsplash.com/photo-1529690648467-d499766e4206?q=80&w=2070&auto=format&fit=crop"
+              alt="Artisan weaving"
+              className="w-full h-full object-cover grayscale"
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-earth-900 via-earth-900/80 to-earth-900/60 z-10" />
+
+          <div className="relative z-20">
+            <Link to="/" className="flex items-center gap-2 group mb-12">
+              <div className="w-10 h-10 rounded-full bg-earth-50 flex items-center justify-center text-earth-900 font-serif font-bold text-2xl shadow-lg">
+                H
+              </div>
+              <span className="font-serif text-3xl font-bold tracking-wider text-earth-50">
+                HASTKALA
+              </span>
+            </Link>
+
+            <h2 className="text-4xl font-serif font-bold leading-snug mb-4">
+              {isArtisan ? 'Sell Directly. Keep Everything.' : 'Join the Movement.'}
+            </h2>
+            <p className="text-earth-300 font-light text-lg">
+              {isArtisan
+                ? 'List your crafts, receive payments directly to your Aadhaar wallet. No middlemen, ever.'
+                : 'Shop directly from India\'s most talented rural artisans. Every purchase preserves heritage.'}
+            </p>
+          </div>
+
+          <div className="relative z-20 mt-auto">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-px bg-terracotta-500" />
+              <p className="text-sm font-bold uppercase tracking-widest text-terracotta-400">Restoring Dignity</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side - Form */}
+        <div className="md:w-7/12 p-10 lg:p-16 flex flex-col relative bg-white">
+          <Link to="/login" className="absolute top-8 left-8 text-earth-400 hover:text-earth-800 transition-colors flex items-center gap-2 text-sm font-medium">
+            <ArrowLeft size={16} /> Back to Login
+          </Link>
+
+          <div className="mb-8 text-center mt-8 md:mt-0">
+            <h3 className="text-2xl font-serif font-bold text-earth-900 mb-2">Create your Account</h3>
+            <p className="text-earth-500 text-sm">Join thousands of artisans and buyers on Hastkala</p>
+          </div>
+
+          {/* Role Toggle */}
+          <div className="flex p-1 bg-earth-100 rounded-lg mb-6 relative">
+            <motion.div
+              layout
+              className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-md shadow-sm border border-earth-200 ${isArtisan ? 'left-[calc(50%+2px)]' : 'left-1'}`}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            />
+            <button
+              onClick={() => setIsArtisan(false)}
+              className={`flex-1 py-3 text-sm font-bold tracking-wider uppercase relative z-10 transition-colors ${!isArtisan ? 'text-earth-900' : 'text-earth-500 hover:text-earth-700'}`}
+            >
+              I am a Buyer
+            </button>
+            <button
+              onClick={() => setIsArtisan(true)}
+              className={`flex-1 py-3 text-sm font-bold tracking-wider uppercase relative z-10 transition-colors ${isArtisan ? 'text-earth-900' : 'text-earth-500 hover:text-earth-700'}`}
+            >
+              I am an Artisan
+            </button>
+          </div>
+
+          <form onSubmit={handleSignup} className="flex flex-col gap-4">
+
+            {/* Full Name */}
+            <div className="relative">
+              <label className="block text-xs font-bold text-earth-700 uppercase tracking-wider mb-2">Full Name</label>
+              <div className="relative">
+                <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-earth-400 pointer-events-none" />
+                <input
+                  type="text"
+                  className="w-full pl-11 pr-4 py-3 bg-earth-50 border border-earth-200 rounded focus:outline-none focus:border-terracotta-500 focus:ring-1 focus:ring-terracotta-500 transition-all text-earth-900"
+                  placeholder="Jane Doe"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Email */}
+            <div className="relative">
+              <label className="block text-xs font-bold text-earth-700 uppercase tracking-wider mb-2">Email Address</label>
+              <div className="relative">
+                <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-earth-400 pointer-events-none" />
+                <input
+                  type="email"
+                  className="w-full pl-11 pr-4 py-3 bg-earth-50 border border-earth-200 rounded focus:outline-none focus:border-terracotta-500 focus:ring-1 focus:ring-terracotta-500 transition-all text-earth-900"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Password */}
+            <div className="relative">
+              <label className="block text-xs font-bold text-earth-700 uppercase tracking-wider mb-2">Password</label>
+              <div className="relative">
+                <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-earth-400 pointer-events-none" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  className="w-full pl-11 pr-12 py-3 bg-earth-50 border border-earth-200 rounded focus:outline-none focus:border-terracotta-500 focus:ring-1 focus:ring-terracotta-500 transition-all text-earth-900"
+                  placeholder="Min. 6 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-earth-400 hover:text-earth-700"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Confirm Password */}
+            <div className="relative">
+              <label className="block text-xs font-bold text-earth-700 uppercase tracking-wider mb-2">Confirm Password</label>
+              <div className="relative">
+                <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-earth-400 pointer-events-none" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  className="w-full pl-11 pr-4 py-3 bg-earth-50 border border-earth-200 rounded focus:outline-none focus:border-terracotta-500 focus:ring-1 focus:ring-terracotta-500 transition-all text-earth-900"
+                  placeholder="Repeat your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            {error && (
+              <p className="text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded px-4 py-2">{error}</p>
+            )}
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-earth-900 text-white font-bold uppercase tracking-widest py-4 rounded mt-2 hover:bg-terracotta-700 transition-colors shadow-lg shadow-earth-900/20 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isLoading ? 'Creating Account...' : isArtisan ? 'Join as Artisan' : 'Create Buyer Account'}
+            </button>
+          </form>
+
+          <p className="text-center text-sm text-earth-500 mt-6">
+            Already have an account?{' '}
+            <Link to="/login" className="font-bold text-terracotta-600 hover:text-terracotta-800">
+              Sign in
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Signup;
