@@ -9,7 +9,15 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
     try {
       const localCart = localStorage.getItem('hastkala_cart');
-      return localCart ? JSON.parse(localCart) : [];
+      if (localCart) {
+        const parsed = JSON.parse(localCart);
+        // Ensure all items have a valid 24-character ObjectId to prevent order failures
+        return parsed.filter(item => {
+          const id = item._id || item.id;
+          return id && typeof id === 'string' && id.length === 24;
+        });
+      }
+      return [];
     } catch {
       return [];
     }

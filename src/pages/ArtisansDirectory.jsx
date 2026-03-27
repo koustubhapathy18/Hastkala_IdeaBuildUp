@@ -10,8 +10,23 @@ import { products as localProducts } from '../data/products';
 const ArtisansDirectory = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeRegion, setActiveRegion] = useState('All India');
-  const [products] = useState(localProducts);
-  const [isLoading] = useState(false);
+  const [products, setProducts] = useState(localProducts);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setProducts(data);
+        }
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching products:', err);
+        setIsLoading(false);
+      });
+  }, []);
 
   // Extract unique artisans from our products data
   const artisans = useMemo(() => {

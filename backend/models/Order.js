@@ -12,6 +12,9 @@ const orderSchema = new mongoose.Schema({
   items: [
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+      title: { type: String },
+      image: { type: String },
+      artisan: { type: String },
       quantity: { type: Number, default: 1 },
       price: { type: Number, required: true }
     }

@@ -61,12 +61,27 @@ const FilterSidebar = ({ categories, activeCategory, setActiveCategory, priceRan
 const Discover = () => {
   const { addToCart } = useCart();
   const { toggleWishlist, isWishlisted } = useWishlist();
-  const [products] = useState(localProducts);
+  const [products, setProducts] = useState(localProducts);
   const [activeCategory, setActiveCategory] = useState('All');
   const [priceRange, setPriceRange] = useState(15000);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [hoveredProduct, setHoveredProduct] = useState(null);
-  const [isLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setProducts(data);
+        }
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching products:', err);
+        setIsLoading(false);
+      });
+  }, []);
 
   const categories = ['All', 'Textiles', 'Pottery', 'Decor', 'Metalwork', 'Paintings'];
   

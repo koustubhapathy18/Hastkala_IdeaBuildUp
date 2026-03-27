@@ -13,7 +13,22 @@ const ProductGrid = () => {
   const [hoveredProduct, setHoveredProduct] = useState(null);
   const [products, setProducts] = useState(localProducts);
   const [activeFilter, setActiveFilter] = useState('All');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setProducts(data);
+        }
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching products:', err);
+        setIsLoading(false);
+      });
+  }, []);
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);

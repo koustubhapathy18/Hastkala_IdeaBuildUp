@@ -7,6 +7,7 @@ const Order = require('./models/Order');
 
 const sampleProducts = [
   {
+    _id: "65a1234567890abcdef00001",
     title: "Aranmula Metal Mirror (Kannadi)",
     artisan: "Gopakumar V.",
     village: "Aranmula",
@@ -22,6 +23,7 @@ const sampleProducts = [
     priceBreakdown: { artisan: 18500, platformFee: 0, middleman: 0 }
   },
   {
+    _id: "65a1234567890abcdef00002",
     title: "Gond Painting on Canvas",
     artisan: "Ramesh Shyam",
     village: "Patangarh",
@@ -37,6 +39,7 @@ const sampleProducts = [
     priceBreakdown: { artisan: 5400, platformFee: 0, middleman: 0 }
   },
   {
+    _id: "65a1234567890abcdef00003",
     title: "Bagh Print Textile",
     artisan: "Mohammed Yusuf Khatri",
     village: "Bagh",
@@ -67,6 +70,7 @@ const sampleProducts = [
     priceBreakdown: { artisan: 4500, platformFee: 0, middleman: 0 }
   },
   {
+    _id: "65a1234567890abcdef00005",
     title: "Wooden Lacquer Toys",
     artisan: "Srinivas Rao",
     village: "Channapatna",
@@ -82,6 +86,7 @@ const sampleProducts = [
     priceBreakdown: { artisan: 1800, platformFee: 0, middleman: 0 }
   },
   {
+    _id: "65a1234567890abcdef00006",
     title: "Manipuri Handloom Weaving",
     artisan: "Ibemhal Devi",
     village: "Imphal",
@@ -142,6 +147,7 @@ const sampleProducts = [
     priceBreakdown: { artisan: 3200, platformFee: 0, middleman: 0 }
   },
   {
+    _id: "65a1234567890abcdef00010",
     title: "Bastar Dhokra Metal Craft",
     artisan: "Budhan Ram",
     village: "Bastar",
@@ -262,6 +268,7 @@ const sampleProducts = [
     priceBreakdown: { artisan: 14500, platformFee: 0, middleman: 0 }
   },
   {
+    _id: "65a1234567890abcdef00017",
     title: "Sambalpuri Ikkat Handloom Saree - Elephant Motif",
     artisan: "Meher Weavers",
     village: "Bargarh",
@@ -277,6 +284,7 @@ const sampleProducts = [
     priceBreakdown: { artisan: 8500, platformFee: 0, middleman: 0 }
   },
   {
+    _id: "65a1234567890abcdef00018",
     title: "Odisha Ikat Saree - Traditional Blue Geometry",
     artisan: "Patnaik Handlooms",
     village: "Nuapatna",

@@ -56,18 +56,29 @@ const Checkout = () => {
       },
       items: cart.map(item => ({
         productId: item._id || item.id,
+        title: item.title || item.name || 'Unnamed Product',
+        image: item.image || '',
+        artisan: item.artisan || '',
         quantity: item.quantity,
         price: item.price
       })),
       totalAmount: calculateSubtotal()
     };
 
+    const token = localStorage.getItem('token');
     fetch('/api/orders', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+      },
       body: JSON.stringify(orderData)
     })
-    .then(res => res.json())
+    .then(async res => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to place order');
+      return data;
+    })
     .then(data => {
       setIsProcessing(false);
       setOrderId(data._id || Math.floor(100000 + Math.random() * 900000));
@@ -76,11 +87,8 @@ const Checkout = () => {
     })
     .catch(err => {
       console.error('Order placement failed:', err);
+      alert('Order placement failed: ' + err.message);
       setIsProcessing(false);
-      // Fallback for hackathon demo
-      setOrderId(Math.floor(100000 + Math.random() * 900000));
-      setStep(3);
-      clearCart();
     });
   };
 

@@ -1,6 +1,6 @@
 export const products = [
   {
-    id: 1,
+    id: "65a1234567890abcdef00001",
     title: "Aranmula Metal Mirror (Kannadi)",
     artisan: "Gopakumar V.",
     village: "Aranmula",
@@ -16,7 +16,7 @@ export const products = [
     priceBreakdown: { artisan: 18500, platformFee: 0, middleman: 0 }
   },
   {
-    id: 2,
+    id: "65a1234567890abcdef00002",
     title: "Gond Painting on Canvas",
     artisan: "Ramesh Shyam",
     village: "Patangarh",
@@ -32,7 +32,7 @@ export const products = [
     priceBreakdown: { artisan: 5400, platformFee: 0, middleman: 0 }
   },
   {
-    id: 3,
+    id: "65a1234567890abcdef00003",
     title: "Bagh Print Textile",
     artisan: "Mohammed Yusuf Khatri",
     village: "Bagh",
@@ -48,7 +48,7 @@ export const products = [
     priceBreakdown: { artisan: 3200, platformFee: 0, middleman: 0 }
   },
   {
-    id: 4,
+    id: "65a1234567890abcdef00004",
     title: "Warli Painting",
     artisan: "Jivya Soma Mashe",
     village: "Dahanu",
@@ -64,7 +64,7 @@ export const products = [
     priceBreakdown: { artisan: 4500, platformFee: 0, middleman: 0 }
   },
   {
-    id: 5,
+    id: "65a1234567890abcdef00005",
     title: "Wooden Lacquer Toys",
     artisan: "Srinivas Rao",
     village: "Channapatna",
@@ -80,7 +80,7 @@ export const products = [
     priceBreakdown: { artisan: 1800, platformFee: 0, middleman: 0 }
   },
   {
-    id: 6,
+    id: "65a1234567890abcdef00006",
     title: "Manipuri Handloom Weaving",
     artisan: "Ibemhal Devi",
     village: "Imphal",
@@ -96,7 +96,7 @@ export const products = [
     priceBreakdown: { artisan: 6500, platformFee: 0, middleman: 0 }
   },
   {
-    id: 7,
+    id: "65a1234567890abcdef00007",
     title: "Mask Making (Majuli Masks)",
     artisan: "Hemchandra Goswami",
     village: "Majuli",
@@ -112,7 +112,7 @@ export const products = [
     priceBreakdown: { artisan: 8900, platformFee: 0, middleman: 0 }
   },
   {
-    id: 8,
+    id: "65a1234567890abcdef00008",
     title: "Madhubani Wall Painting",
     artisan: "Anita Paswan",
     village: "Jitwarpur",
@@ -128,7 +128,7 @@ export const products = [
     priceBreakdown: { artisan: 6400, platformFee: 0, middleman: 0 }
   },
   {
-    id: 9,
+    id: "65a1234567890abcdef00009",
     title: "Vintage Terracotta Pottery",
     artisan: "Ramesh Kumar",
     village: "Bishnupur",
@@ -144,7 +144,7 @@ export const products = [
     priceBreakdown: { artisan: 3200, platformFee: 0, middleman: 0 }
   },
   {
-    id: 10,
+    id: "65a1234567890abcdef00010",
     title: "Bastar Dhokra Metal Craft",
     artisan: "Budhan Ram",
     village: "Bastar",
@@ -160,7 +160,7 @@ export const products = [
     priceBreakdown: { artisan: 8500, platformFee: 0, middleman: 0 }
   },
   {
-    id: 11,
+    id: "65a1234567890abcdef00011",
     title: "Wrought Iron Craft",
     artisan: "Shivu Lohar",
     village: "Kondagaon",
@@ -176,7 +176,7 @@ export const products = [
     priceBreakdown: { artisan: 4100, platformFee: 0, middleman: 0 }
   },
   {
-    id: 12,
+    id: "65a1234567890abcdef00012",
     title: "Handcrafted Clay Pottery",
     artisan: "Sunita Kumhar",
     village: "Pokhran",
@@ -192,7 +192,7 @@ export const products = [
     priceBreakdown: { artisan: 2100, platformFee: 0, middleman: 0 }
   },
   {
-    id: 13,
+    id: "65a1234567890abcdef00013",
     title: "Kondapalli Wooden Toys",
     artisan: "Praveen Acharya",
     village: "Kondapalli",
@@ -208,7 +208,7 @@ export const products = [
     priceBreakdown: { artisan: 2600, platformFee: 0, middleman: 0 }
   },
   {
-    id: 14,
+    id: "65a1234567890abcdef00014",
     title: "Kalamkari Handwoven Textile",
     artisan: "Lakshmi Narayana",
     village: "Srikalahasti",
@@ -224,7 +224,7 @@ export const products = [
     priceBreakdown: { artisan: 4100, platformFee: 0, middleman: 0 }
   },
   {
-    id: 15,
+    id: "65a1234567890abcdef00015",
     title: "Bamboo Basketry",
     artisan: "Kamla T.",
     village: "Sualkuchi",
@@ -240,7 +240,7 @@ export const products = [
     priceBreakdown: { artisan: 2850, platformFee: 0, middleman: 0 }
   },
   {
-    id: 16,
+    id: "65a1234567890abcdef00016",
     title: "Monpa Wood Carving",
     artisan: "Tenzin Norbu",
     village: "Tawang",
@@ -256,7 +256,7 @@ export const products = [
     priceBreakdown: { artisan: 11500, platformFee: 0, middleman: 0 }
   },
   {
-    id: 17,
+    id: "65a1234567890abcdef00017",
     title: "Muga Silk Weaving",
     artisan: "Anjali Gogoi",
     village: "Sualkuchi",
@@ -272,7 +272,7 @@ export const products = [
     priceBreakdown: { artisan: 14500, platformFee: 0, middleman: 0 }
   },
   {
-    id: 17,
+    id: "65a1234567890abcdef00017",
     title: "Sambalpuri Ikkat Handloom Saree - Elephant Motif",
     artisan: "Meher Weavers",
     village: "Bargarh",
@@ -288,7 +288,7 @@ export const products = [
     priceBreakdown: { artisan: 8500, platformFee: 0, middleman: 0 }
   },
   {
-    id: 18,
+    id: "65a1234567890abcdef00018",
     title: "Odisha Ikat Saree - Traditional Blue Geometry",
     artisan: "Patnaik Handlooms",
     village: "Nuapatna",
