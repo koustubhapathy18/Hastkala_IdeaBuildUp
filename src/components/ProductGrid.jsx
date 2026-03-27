@@ -5,27 +5,15 @@ import { IndianRupee, QrCode, ShieldPlus, ExternalLink, ShoppingBag, Eye, Heart,
 import { Link } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';
+import { products as localProducts } from '../data/products';
 
 const ProductGrid = () => {
   const { addToCart } = useCart();
   const { toggleWishlist, isWishlisted } = useWishlist();
   const [hoveredProduct, setHoveredProduct] = useState(null);
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(localProducts);
   const [activeFilter, setActiveFilter] = useState('All');
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/products')
-      .then(res => res.json())
-      .then(data => {
-        setProducts(data);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to fetch products', err);
-        setIsLoading(false);
-      });
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';
 import { IndianRupee, ShieldPlus, Filter, X, QrCode, ShoppingBag, ExternalLink, Heart } from 'lucide-react';
+import { products as localProducts } from '../data/products';
 
 
 const FilterSidebar = ({ categories, activeCategory, setActiveCategory, priceRange, setPriceRange }) => (
@@ -60,25 +61,12 @@ const FilterSidebar = ({ categories, activeCategory, setActiveCategory, priceRan
 const Discover = () => {
   const { addToCart } = useCart();
   const { toggleWishlist, isWishlisted } = useWishlist();
-  const [products, setProducts] = useState([]);
+  const [products] = useState(localProducts);
   const [activeCategory, setActiveCategory] = useState('All');
   const [priceRange, setPriceRange] = useState(15000);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [hoveredProduct, setHoveredProduct] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/products')
-      .then(res => res.json())
-      .then(data => {
-        setProducts(data);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to fetch products', err);
-        setIsLoading(false);
-      });
-  }, []);
+  const [isLoading] = useState(false);
 
   const categories = ['All', 'Textiles', 'Pottery', 'Decor', 'Metalwork', 'Paintings'];
   

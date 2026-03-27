@@ -1,14 +1,18 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
-import { IndianRupee, Trash2, ArrowRight, ShoppingBag, ShieldPlus } from 'lucide-react';
+import { IndianRupee, Trash2, ArrowRight, ShoppingBag, ShieldPlus, Minus, Plus } from 'lucide-react';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 
 const Cart = () => {
-  const { cart, removeFromCart } = useCart();
+  const { cart, removeFromCart, updateQuantity } = useCart();
 
   const calculateSubtotal = () => {
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  };
+
+  const calculateTotalItems = () => {
+    return cart.reduce((total, item) => total + item.quantity, 0);
   };
 
   if (cart.length === 0) {
@@ -64,8 +68,22 @@ const Cart = () => {
                    </div>
 
                    <div className="flex items-center justify-between mt-4 sm:mt-0 pt-4 border-t border-earth-100 sm:border-0 sm:pt-0">
-                     <div className="flex items-center gap-3 bg-earth-50 px-3 py-1.5 rounded-lg border border-earth-200">
-                        <span className="text-sm text-earth-600 font-medium">Qty: {item.quantity}</span>
+                     <div className="flex items-center gap-1 bg-earth-50 rounded-lg border border-earth-200">
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          className="w-8 h-8 flex items-center justify-center text-earth-600 hover:bg-earth-200 rounded-l-lg transition-colors"
+                          title={item.quantity === 1 ? 'Remove item' : 'Decrease quantity'}
+                        >
+                          <Minus size={14} />
+                        </button>
+                        <span className="w-8 text-center text-sm text-earth-900 font-bold">{item.quantity}</span>
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          className="w-8 h-8 flex items-center justify-center text-earth-600 hover:bg-earth-200 rounded-r-lg transition-colors"
+                          title="Increase quantity"
+                        >
+                          <Plus size={14} />
+                        </button>
                      </div>
                      
                      <div className="sm:hidden text-right">
@@ -92,7 +110,7 @@ const Cart = () => {
                
                <div className="space-y-4 mb-8 text-earth-700 text-sm">
                  <div className="flex justify-between items-center">
-                   <span>Subtotal ({cart.length} items)</span>
+                   <span>Subtotal ({calculateTotalItems()} items)</span>
                    <span className="font-bold text-earth-900 flex items-center"><IndianRupee size={14}/> {calculateSubtotal().toLocaleString('en-IN')}</span>
                  </div>
                  <div className="flex justify-between items-center text-forest-700">

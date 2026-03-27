@@ -4,6 +4,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';
+import { products as localProducts } from '../data/products';
 import {
   IndianRupee, ShoppingBag, ShieldPlus, ChevronLeft, ShieldCheck, Heart,
   Clock, Ruler, Truck, Layers, Award, Package, Zap, Tag, RefreshCcw,
@@ -101,6 +102,7 @@ const ProductDetails = () => {
   const [buyingNow, setBuyingNow] = useState(false);
 
   useEffect(() => {
+    // Try API first, fall back to local data
     fetch(`/api/products/${id}`)
       .then(res => {
         if (!res.ok) throw new Error('Product not found');
@@ -110,9 +112,12 @@ const ProductDetails = () => {
         setProduct(data);
         setIsLoading(false);
       })
-      .catch(err => {
-        console.error(err);
-        setProduct(null);
+      .catch(() => {
+        // Fallback: find product in local data by _id or id
+        const found = localProducts.find(
+          p => String(p._id) === String(id) || String(p.id) === String(id)
+        );
+        setProduct(found || null);
         setIsLoading(false);
       });
   }, [id]);

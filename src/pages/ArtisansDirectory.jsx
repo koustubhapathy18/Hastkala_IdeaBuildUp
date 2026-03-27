@@ -3,27 +3,15 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, MapPin, Award, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { products as localProducts } from '../data/products';
 
 // We can leverage the artisans from the fetched products data to build this directory
 
 const ArtisansDirectory = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeRegion, setActiveRegion] = useState('All India');
-  const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/products')
-      .then(res => res.json())
-      .then(data => {
-        setProducts(data);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to fetch products', err);
-        setIsLoading(false);
-      });
-  }, []);
+  const [products] = useState(localProducts);
+  const [isLoading] = useState(false);
 
   // Extract unique artisans from our products data
   const artisans = useMemo(() => {

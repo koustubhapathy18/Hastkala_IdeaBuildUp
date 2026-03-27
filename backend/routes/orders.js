@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
+const Product = require('../models/Product');
 const jwt = require('jsonwebtoken');
 
 // Auth middleware (duplicated for simplicity, but ideally shared)
@@ -21,7 +22,27 @@ const auth = (req, res, next) => {
 router.post('/', async (req, res) => {
   try {
     const { customerInfo, items, totalAmount } = req.body;
-    
+
+    // --- Stock Validation ---
+    for (const item of items) {
+      const product = await Product.findById(item.productId);
+      if (!product) {
+        return res.status(400).json({ message: `Product not found: ${item.productId}` });
+      }
+      if (product.stock < item.quantity) {
+        return res.status(400).json({
+          message: `Insufficient stock for "${product.title}". Available: ${product.stock}, Requested: ${item.quantity}`
+        });
+      }
+    }
+
+    // --- Decrement Stock ---
+    for (const item of items) {
+      await Product.findByIdAndUpdate(item.productId, {
+        $inc: { stock: -item.quantity }
+      });
+    }
+
     const newOrder = new Order({
       customerInfo,
       items,
