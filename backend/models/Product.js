@@ -21,4 +21,13 @@ const productSchema = new mongoose.Schema({
   stock: { type: Number, default: 10 }
 }, { timestamps: true });
 
+// ── Compound & Text Indexes for O(log n) Query Performance ──
+// Boost search algorithm speed when doing $or queries across category/artisan
+productSchema.index({ category: 1, artisan: 1 });
+productSchema.index({ price: 1 });
+productSchema.index({ isBestseller: -1 });
+
+// Add a generic Text Index for powerful future full-text search capabilities
+productSchema.index({ title: 'text', description: 'text', artisan: 'text', material: 'text' });
+
 module.exports = mongoose.model('Product', productSchema);

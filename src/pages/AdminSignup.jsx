@@ -12,6 +12,21 @@ const AdminSignup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  const getPasswordStrength = (pass) => {
+    if (!pass) return { label: '', color: 'bg-transparent', width: 'w-0' };
+    let score = 0;
+    if (pass.length > 5) score += 1;
+    if (pass.length > 8) score += 1;
+    if (/[A-Z]/.test(pass)) score += 1;
+    if (/[0-9]/.test(pass)) score += 1;
+    if (/[^A-Za-z0-9]/.test(pass)) score += 1;
+
+    if (score <= 1) return { label: 'Weak', color: 'bg-red-400', width: 'w-1/4', text: 'text-red-400' };
+    if (score === 2) return { label: 'Medium', color: 'bg-orange-400', width: 'w-2/4', text: 'text-orange-400' };
+    if (score === 3) return { label: 'Good', color: 'bg-yellow-400', width: 'w-3/4', text: 'text-yellow-400' };
+    return { label: 'Strong', color: 'bg-green-400', width: 'w-full', text: 'text-green-400' };
+  };
+
   const handleSignup = async (e) => {
     e.preventDefault();
     setError(null);
@@ -107,6 +122,23 @@ const AdminSignup = () => {
                   required
                 />
               </div>
+
+              {/* Password Strength Indicator */}
+              {password.length > 0 && (
+                <div className="mt-2">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-[10px] text-earth-500 uppercase tracking-widest font-bold">Security Level</span>
+                    <span className={`text-[10px] uppercase tracking-widest font-bold ${getPasswordStrength(password).text}`}>
+                      {getPasswordStrength(password).label}
+                    </span>
+                  </div>
+                  <div className="h-1.5 w-full bg-earth-900 border border-earth-700 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full ${getPasswordStrength(password).color} ${getPasswordStrength(password).width} transition-all duration-300`} 
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             {error && (

@@ -607,6 +607,49 @@ const ProductDetails = () => {
 
           </div>
         </div>
+
+        {/* ── Recommendation Engine: Similar Masterpieces ── */}
+        {product.relatedProducts && product.relatedProducts.length > 0 && (
+          <div className="mt-24 pt-16 border-t border-earth-200/60">
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                <h2 className="text-3xl font-serif font-light text-earth-900 leading-tight">
+                  Similar <span className="italic font-light text-terracotta-700">Masterpieces</span>
+                </h2>
+                <p className="text-earth-500 text-sm mt-2">Customers who explored this also viewed authentic crafts by other artisans.</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {product.relatedProducts.map((related) => (
+                <Link
+                  key={related._id}
+                  to={`/product/${related._id}`}
+                  className="group block bg-white rounded-2xl border border-earth-100 hover:border-earth-200 hover:shadow-xl transition-all duration-300 overflow-hidden"
+                >
+                  <div className="aspect-[4/5] bg-earth-100 overflow-hidden relative">
+                    <img 
+                      src={related.image} 
+                      alt={related.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                    />
+                  </div>
+                  <div className="p-5">
+                    <p className="text-[10px] font-bold text-earth-400 uppercase tracking-widest mb-1">{related.category}</p>
+                    <h3 className="font-serif font-bold text-earth-900 leading-tight group-hover:text-terracotta-600 transition-colors line-clamp-1 mb-2">
+                       {related.title}
+                    </h3>
+                    <div className="flex justify-between items-end mt-4 pt-4 border-t border-earth-100">
+                       <span className="text-xs text-earth-500">{related.artisan}</span>
+                       <span className="font-bold flex items-center text-earth-900"><IndianRupee size={12}/>{related.price.toLocaleString('en-IN')}</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );

@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
 const artisanRoutes = require('./routes/artisans');
@@ -11,8 +13,21 @@ const adminRoutes = require('./routes/admin');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+// ── 1. Secure HTTP Headers ──
+app.use(helmet());
 
-// Middleware
+// ── 2. DDoS Protection (Rate Limiting) ──
+// Limit each IP to 200 API requests per 15 minutes
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 200, 
+  standardHeaders: true, 
+  legacyHeaders: false,
+  message: { message: "Too many backend requests from this IP, please try again after 15 minutes" }
+});
+app.use('/api/', apiLimiter);
+
+// ── 3. Standard Middleware ──
 app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176'] }));
 
 
@@ -20,6 +35,8 @@ app.use(express.json());
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/hastkala', {
+  tls: true,
+  tlsAllowInvalidCertificates: false,
 }).then(() => console.log('MongoDB connected'))
   .catch(err => console.log('MongoDB connection error:', err));
 
@@ -32,6 +49,16 @@ app.use('/api/admin', adminRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hastkala API is running...');
+});
+
+// ── 4. Centralized Global Error Handler ──
+app.use((err, req, res, next) => {
+  console.error('🔥 [Global Error Handler]:', err.stack);
+  res.status(err.status || 500).json({
+    message: err.message || 'Internal Server Error',
+    // Hide sensitive stack traces if in production mode
+    stack: process.env.NODE_ENV === 'production' ? null : err.stack
+  });
 });
 
 // Start Server

@@ -17,6 +17,21 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  const getPasswordStrength = (pass) => {
+    if (!pass) return { label: '', color: 'bg-transparent', width: 'w-0' };
+    let score = 0;
+    if (pass.length > 5) score += 1;
+    if (pass.length > 8) score += 1;
+    if (/[A-Z]/.test(pass)) score += 1;
+    if (/[0-9]/.test(pass)) score += 1;
+    if (/[^A-Za-z0-9]/.test(pass)) score += 1;
+
+    if (score <= 1) return { label: 'Weak', color: 'bg-red-500', width: 'w-1/4', text: 'text-red-500' };
+    if (score === 2) return { label: 'Medium', color: 'bg-orange-500', width: 'w-2/4', text: 'text-orange-500' };
+    if (score === 3) return { label: 'Good', color: 'bg-yellow-500', width: 'w-3/4', text: 'text-yellow-500' };
+    return { label: 'Strong', color: 'bg-green-500', width: 'w-full', text: 'text-green-500' };
+  };
+
   const handleSignup = async (e) => {
     e.preventDefault();
     setError(null);
@@ -193,6 +208,23 @@ const Signup = () => {
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
+              
+              {/* Password Strength Indicator */}
+              {password.length > 0 && (
+                <div className="mt-2">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-[10px] text-earth-500 uppercase tracking-widest font-bold">Password strength</span>
+                    <span className={`text-[10px] uppercase tracking-widest font-bold ${getPasswordStrength(password).text}`}>
+                      {getPasswordStrength(password).label}
+                    </span>
+                  </div>
+                  <div className="h-1.5 w-full bg-earth-200 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full ${getPasswordStrength(password).color} ${getPasswordStrength(password).width} transition-all duration-300`} 
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Confirm Password */}

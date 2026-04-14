@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';
 import { IndianRupee, ShieldPlus, Filter, X, QrCode, ShoppingBag, ExternalLink, Heart } from 'lucide-react';
@@ -59,6 +59,10 @@ const FilterSidebar = ({ categories, activeCategory, setActiveCategory, priceRan
 );
 
 const Discover = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get('search') || '';
+
   const { addToCart } = useCart();
   const { toggleWishlist, isWishlisted } = useWishlist();
   const [products, setProducts] = useState(localProducts);
@@ -69,10 +73,17 @@ const Discover = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/products')
+    setIsLoading(true);
+    let url = '/api/products';
+    if (searchQuery) {
+       url += `?search=${encodeURIComponent(searchQuery)}`;
+    }
+    fetch(url)
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
+        if (data && Array.isArray(data.data)) {
+          setProducts(data.data);
+        } else if (Array.isArray(data)) {
           setProducts(data);
         }
         setIsLoading(false);
@@ -81,7 +92,7 @@ const Discover = () => {
         console.error('Error fetching products:', err);
         setIsLoading(false);
       });
-  }, []);
+  }, [searchQuery]);
 
   const categories = ['All', 'Textiles', 'Pottery', 'Decor', 'Metalwork', 'Paintings'];
   
@@ -97,10 +108,16 @@ const Discover = () => {
         {/* Header Section */}
         <div className="mb-12 text-center md:text-left">
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-earth-900 mb-4">
-            Discover <span className="font-light italic text-terracotta-600">Collections</span>
+            {searchQuery ? (
+               <>Search Results for <span className="font-light italic text-terracotta-600">"{searchQuery}"</span></>
+            ) : (
+               <>Discover <span className="font-light italic text-terracotta-600">Collections</span></>
+            )}
           </h1>
           <p className="text-earth-600 max-w-2xl text-lg font-light">
-            Explore handcrafted masterpieces verified by TruthMark. Shop directly from rural artisans across India.
+            {searchQuery 
+              ? `Showing results matching your query across all our authentic, TruthMark verified artisans.` 
+              : `Explore handcrafted masterpieces verified by TruthMark. Shop directly from rural artisans across India.`}
           </p>
         </div>
 

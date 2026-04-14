@@ -17,8 +17,9 @@ const ArtisansDirectory = () => {
     fetch('/api/products')
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
-          setProducts(data);
+        let products = Array.isArray(data) ? data : (data && Array.isArray(data.data) ? data.data : []);
+        if (products.length > 0) {
+          setProducts(products);
         }
         setIsLoading(false);
       })

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ShoppingBag, User, Heart } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, ShoppingBag, User, Heart, Search } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';
 import { jwtDecode } from 'jwt-decode';
@@ -16,7 +16,9 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const [userRole, setUserRole] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const isHomePage = location.pathname === '/';
 
   useEffect(() => {
@@ -47,6 +49,15 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/discover?search=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery('');
+      setMobileMenuOpen(false);
+    }
+  };
+
   const navLinks = [
     { name: 'Collections', path: '/discover' },
     { name: 'Master Artisans', path: '/artisans' },
@@ -66,7 +77,7 @@ const Navbar = () => {
           : 'py-6 bg-transparent'
       }`}
     >
-      <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between">
+      <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between gap-8 xl:gap-12">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 group">
           <motion.div 
@@ -102,6 +113,28 @@ const Navbar = () => {
             </Link>
           ))}
         </nav>
+
+        {/* Global Search Bar (Omnibar) - Desktop */}
+        <div className="hidden lg:flex flex-1 max-w-xs xl:max-w-md relative">
+          <form onSubmit={handleSearch} className="w-full relative group">
+            <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors ${
+              (isScrolled || !isHomePage) ? 'text-earth-400 group-focus-within:text-terracotta-600' : 'text-white/70 group-focus-within:text-white'
+            }`}>
+              <Search size={16} />
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search masterpieces, artisans, materials..."
+              className={`w-full pl-10 pr-4 py-2 border rounded-full text-[13px] font-medium tracking-wide focus:outline-none focus:ring-2 focus:ring-terracotta-500/50 transition-all ${
+                (isScrolled || !isHomePage)
+                  ? 'bg-earth-50 border-earth-200 text-earth-900 placeholder:text-earth-400 focus:bg-white focus:border-terracotta-300 shadow-inner'
+                  : 'bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/20'
+              }`}
+            />
+          </form>
+        </div>
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-6">
@@ -196,6 +229,20 @@ const Navbar = () => {
               </div>
 
               <nav className="flex flex-col gap-6">
+                {/* Mobile Search */}
+                <form onSubmit={handleSearch} className="relative w-full mb-2">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-earth-400">
+                    <Search size={18} />
+                  </div>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search amazing crafts..."
+                    className="w-full pl-12 pr-4 py-3 bg-white border border-earth-200 rounded-xl text-earth-900 focus:outline-none focus:border-terracotta-400 focus:ring-2 focus:ring-terracotta-100 shadow-sm"
+                  />
+                </form>
+
                 {navLinks.map((link) => (
                   <Link
                     key={link.name}

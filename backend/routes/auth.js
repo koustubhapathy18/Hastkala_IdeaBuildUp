@@ -29,11 +29,14 @@ router.post('/register', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, password: hashedPassword, role: role || 'buyer' });
+    const assignedRole = role || 'buyer';
+    const assignedStatus = assignedRole === 'artisan' ? 'pending' : 'active';
+    
+    const newUser = new User({ name, email, password: hashedPassword, role: assignedRole, status: assignedStatus });
     await newUser.save();
 
     const token = jwt.sign(
-      { id: newUser._id, role: newUser.role, name: newUser.name, email: newUser.email },
+      { id: newUser._id, role: newUser.role, status: newUser.status, name: newUser.name, email: newUser.email },
       process.env.JWT_SECRET || 'hastkala_secret',
       { expiresIn: '7d' }
     );
@@ -74,6 +77,7 @@ router.post('/login', async (req, res) => {
     const payload = {
       id: user._id,
       role: user.role,
+      status: user.status,
       name: user.name,
       email: user.email
     };

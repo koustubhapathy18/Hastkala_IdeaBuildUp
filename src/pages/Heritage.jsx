@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
-import { Leaf, Award, Compass, Heart } from 'lucide-react';
+import { Leaf, Award, Compass, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Heritage = () => {
@@ -116,9 +116,9 @@ const Heritage = () => {
                 desc: "Our PriceMirror engine ensures absolute transparency. The price you pay is the exact amount the artisan earns."
               },
               {
-                icon: <Heart size={32} />,
-                title: "WomenCraft Direct",
-                desc: "Special focus on supporting female artisan collectives, ensuring financial independence and community growth."
+                icon: <Shield size={32} />,
+                title: "CraftMark IP Shield",
+                desc: "Perceptual Hashing (pHash) generates unique digital fingerprints for designs. AI bots scan global platforms 24/7 to auto-take down copies."
               }
             ].map((feature, idx) => (
               <motion.div 

@@ -19,9 +19,8 @@ const ProductGrid = () => {
     fetch('/api/products')
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
-          setProducts(data);
-        }
+        if (data && Array.isArray(data.data)) setProducts(data.data);
+        else if (Array.isArray(data)) setProducts(data);
         setIsLoading(false);
       })
       .catch(err => {

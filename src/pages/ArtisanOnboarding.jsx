@@ -12,6 +12,7 @@ const craftTypes = [
 const ArtisanOnboarding = () => {
   const [step, setStep] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   // Collect all form data in state
@@ -26,7 +27,21 @@ const ArtisanOnboarding = () => {
   const updateField = (field, value) =>
     setFormData(prev => ({ ...prev, [field]: value }));
 
-  const handleNext = () => { if (step < 4) setStep(step + 1); };
+  const handleNext = () => {
+    setError('');
+    if (step === 1) {
+      if (!formData.name.trim() || !formData.phone.trim() || !formData.specialty.trim() || !formData.location.trim()) {
+        setError('Please fill all mandatory fields marked with *');
+        return;
+      }
+    } else if (step === 3) {
+      if (!formData.upi.trim()) {
+        setError('Please provide your UPI ID *');
+        return;
+      }
+    }
+    if (step < 4) setStep(step + 1);
+  };
 
   const finishOnboarding = async () => {
     setIsSaving(true);
@@ -90,11 +105,12 @@ const ArtisanOnboarding = () => {
             {/* STEP 1: Personal Details */}
             {step === 1 && (
               <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                <h2 className="text-2xl font-serif font-bold text-earth-900 mb-6">Personal & Craft Details</h2>
+                <h2 className="text-2xl font-serif font-bold text-earth-900 mb-2">Personal & Craft Details</h2>
+                <p className="text-sm text-terracotta-600 mb-6 italic">* means must have to fill</p>
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-xs font-bold text-earth-700 uppercase tracking-wider mb-2">Full Name</label>
+                      <label className="block text-xs font-bold text-earth-700 uppercase tracking-wider mb-2">Full Name *</label>
                       <input
                         type="text"
                         value={formData.name}
@@ -104,7 +120,7 @@ const ArtisanOnboarding = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-earth-700 uppercase tracking-wider mb-2">Phone Number</label>
+                      <label className="block text-xs font-bold text-earth-700 uppercase tracking-wider mb-2">Phone Number *</label>
                       <input
                         type="tel"
                         value={formData.phone}
@@ -115,7 +131,7 @@ const ArtisanOnboarding = () => {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-earth-700 uppercase tracking-wider mb-2">Craft Type</label>
+                    <label className="block text-xs font-bold text-earth-700 uppercase tracking-wider mb-2">Craft Type *</label>
                     <select
                       value={formData.specialty}
                       onChange={e => updateField('specialty', e.target.value)}
@@ -125,7 +141,7 @@ const ArtisanOnboarding = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-earth-700 uppercase tracking-wider mb-2">Village / Location</label>
+                    <label className="block text-xs font-bold text-earth-700 uppercase tracking-wider mb-2">Village / Location *</label>
                     <input
                       type="text"
                       value={formData.location}
@@ -135,7 +151,8 @@ const ArtisanOnboarding = () => {
                     />
                   </div>
                 </div>
-                <div className="mt-10 flex justify-end">
+                <div className="mt-10 flex flex-col items-end gap-3">
+                  {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
                   <button onClick={handleNext} className="bg-earth-900 text-white px-8 py-3 rounded font-bold uppercase tracking-wider hover:bg-terracotta-700 transition-colors">
                     Save & Continue
                   </button>
@@ -167,7 +184,7 @@ const ArtisanOnboarding = () => {
                   </label>
                 </div>
                 <div className="mt-10 flex justify-between">
-                  <button onClick={() => setStep(step - 1)} className="text-earth-600 font-bold uppercase tracking-wider px-6 py-3 hover:bg-earth-100 rounded transition-colors">Back</button>
+                  <button onClick={() => { setError(''); setStep(step - 1); }} className="text-earth-600 font-bold uppercase tracking-wider px-6 py-3 hover:bg-earth-100 rounded transition-colors">Back</button>
                   <button onClick={handleNext} className="bg-earth-900 text-white px-8 py-3 rounded font-bold uppercase tracking-wider hover:bg-terracotta-700 transition-colors">Upload & Continue</button>
                 </div>
               </motion.div>
@@ -177,7 +194,7 @@ const ArtisanOnboarding = () => {
             {step === 3 && (
               <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <div className="flex items-center gap-3 mb-2">
-                  <h2 className="text-2xl font-serif font-bold text-earth-900">WomenCraft Direct Wallet</h2>
+                  <h2 className="text-2xl font-serif font-bold text-earth-900">Direct Earnings Wallet</h2>
                   <span className="bg-forest-100 text-forest-700 text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded">100% Direct</span>
                 </div>
                 <p className="text-earth-600 mb-8 text-sm">Set up your Aadhaar-linked bank details. 100% of the product price goes directly here.</p>
@@ -185,7 +202,7 @@ const ArtisanOnboarding = () => {
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
                   <CreditCard size={32} className="text-terracotta-400 mb-6" />
                   <div>
-                    <label className="block text-xs font-bold text-earth-400 uppercase tracking-wider mb-1">Aadhaar Linked UPI ID</label>
+                    <label className="block text-xs font-bold text-earth-400 uppercase tracking-wider mb-1">Aadhaar Linked UPI ID *</label>
                     <input
                       type="text"
                       value={formData.upi}
@@ -199,9 +216,12 @@ const ArtisanOnboarding = () => {
                   <ShieldCheck className="text-terracotta-600 mt-0.5" size={20} />
                   <p className="text-sm text-terracotta-900 leading-relaxed font-medium">By linking this account, you confirm sole access to the funds, supporting our mission against financial exploitation.</p>
                 </div>
-                <div className="mt-10 flex justify-between">
-                  <button onClick={() => setStep(step - 1)} className="text-earth-600 font-bold uppercase tracking-wider px-6 py-3 hover:bg-earth-100 rounded transition-colors">Back</button>
-                  <button onClick={handleNext} className="bg-earth-900 text-white px-8 py-3 rounded font-bold uppercase tracking-wider hover:bg-terracotta-700 transition-colors">Link Bank Account</button>
+                <div className="mt-10 flex flex-col gap-3">
+                  {error && <p className="text-red-500 text-sm font-medium text-right">{error}</p>}
+                  <div className="flex justify-between w-full">
+                    <button onClick={() => { setError(''); setStep(step - 1); }} className="text-earth-600 font-bold uppercase tracking-wider px-6 py-3 hover:bg-earth-100 rounded transition-colors">Back</button>
+                    <button onClick={handleNext} className="bg-earth-900 text-white px-8 py-3 rounded font-bold uppercase tracking-wider hover:bg-terracotta-700 transition-colors">Link Bank Account</button>
+                  </div>
                 </div>
               </motion.div>
             )}

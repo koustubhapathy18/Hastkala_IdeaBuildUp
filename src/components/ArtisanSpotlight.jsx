@@ -37,7 +37,7 @@ const ArtisanSpotlight = () => {
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#130d0a]/90"></div>
             </div>
 
-            {/* WomenCraft Badge */}
+            {/* CraftMark Badge */}
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -49,11 +49,11 @@ const ArtisanSpotlight = () => {
                 <div className="flex items-center gap-3 mb-2 border-b border-white/10 pb-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-forest-400 animate-pulse"></span>
                   <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-terracotta-400">
-                    WomenCraft Direct
+                    CraftMark Secured
                   </p>
                 </div>
                 <p className="text-sm font-light text-earth-200 leading-relaxed font-serif italic">
-                  100% Earnings disbursed to Aadhaar Wallet instantly.
+                  Design Protected. 24/7 AI monitoring against knock-offs.
                 </p>
               </div>
             </motion.div>

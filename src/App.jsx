@@ -1,10 +1,14 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import MainLayout from './components/layouts/MainLayout';
+import AdminLayout from './components/layouts/AdminLayout';
+import SellerLayout from './components/layouts/SellerLayout';
+import ProtectedRoute from './components/ProtectedRoute';
+import PendingApproval from './pages/PendingApproval';
+
 import HeroHeader from './components/HeroHeader';
 import Features from './components/Features';
 import ProductGrid from './components/ProductGrid';
 import ArtisanSpotlight from './components/ArtisanSpotlight';
-import Footer from './components/Footer';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ArtisanOnboarding from './pages/ArtisanOnboarding';
@@ -24,6 +28,7 @@ import ArtisansDirectory from './pages/ArtisansDirectory';
 import Heritage from './pages/Heritage';
 import TruthMark from './pages/TruthMark';
 import Wishlist from './pages/Wishlist';
+import CraftMark from './pages/CraftMark';
 
 // Temporary placeholder for routing until other pages are built
 const PlaceholderPage = ({ title }) => (
@@ -44,46 +49,73 @@ function App() {
     <CartProvider>
       <Router>
         <ScrollToTop />
-        <div className="min-h-screen flex flex-col font-sans bg-earth-50 text-earth-900 selection:bg-terracotta-200 selection:text-terracotta-900">
-          <Navbar />
+        <Routes>
+          {/* Main Public / Buyer Navigation wrapped in MainLayout */}
+          <Route element={<MainLayout />}>
+            <Route path="/" element={
+              <>
+                <HeroHeader />
+                <Features />
+                <ProductGrid />
+                <ArtisanSpotlight />
+              </>
+            } />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/join" element={<Login />} />
+            <Route path="/pending" element={<PendingApproval />} />
+            
+            <Route path="/discover" element={<Discover />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/artisans" element={<ArtisansDirectory />} />
+            <Route path="/heritage" element={<Heritage />} />
+            <Route path="/truthmark" element={<TruthMark />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/craftmark" element={<CraftMark />} />
+            <Route path="/schemegpt" element={<PlaceholderPage title="SchemeGPT Assistant" />} />
+
+            <Route path="/buyer-dashboard" element={
+              <ProtectedRoute allowedRoles={['buyer']}>
+                <BuyerDashboard />
+              </ProtectedRoute>
+            } />
+            {/* Alias fallback */}
+            <Route path="/dashboard" element={<Navigate to="/buyer-dashboard" />} />
+          </Route>
+
+          {/* Dedicated Admin Portal Routes wrapped in AdminLayout */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="login" element={<AdminLogin />} />
+            <Route path="signup" element={<AdminSignup />} />
+            <Route path="dashboard" element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } />
+          </Route>
+
+          {/* Dedicated Seller Portal Routes */}
+          <Route path="/seller" element={<SellerLayout />}>
+            {/* Onboarding doesn't require active status so unapproved can fill profiles */}
+            <Route path="onboarding" element={
+              <ProtectedRoute allowedRoles={['artisan']}>
+                <ArtisanOnboarding />
+              </ProtectedRoute>
+            } />
+            <Route path="dashboard" element={
+              <ProtectedRoute allowedRoles={['artisan']} requireActiveStatus={true}>
+                <ArtisanDashboard />
+              </ProtectedRoute>
+            } />
+          </Route>
           
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={
-                <>
-                  <HeroHeader />
-                  <Features />
-                  <ProductGrid />
-                  <ArtisanSpotlight />
-                </>
-              } />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/onboarding" element={<ArtisanOnboarding />} />
-              <Route path="/buyer-dashboard" element={<BuyerDashboard />} />
-              <Route path="/artisan-dashboard" element={<ArtisanDashboard />} />
-              <Route path="/dashboard" element={<ArtisanDashboard />} />
+          {/* Legacy fallback path handling */}
+          <Route path="/onboarding" element={<Navigate to="/seller/onboarding" />} />
+          <Route path="/artisan-dashboard" element={<Navigate to="/seller/dashboard" />} />
 
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin/signup" element={<AdminSignup />} />
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-
-              <Route path="/discover" element={<Discover />} />
-              <Route path="/product/:id" element={<ProductDetails />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/artisans" element={<ArtisansDirectory />} />
-              <Route path="/heritage" element={<Heritage />} />
-              <Route path="/truthmark" element={<TruthMark />} />
-              <Route path="/wishlist" element={<Wishlist />} />
-              <Route path="/join" element={<Login />} />
-              <Route path="/womencraft" element={<PlaceholderPage title="WomenCraft Direct" />} />
-              <Route path="/schemegpt" element={<PlaceholderPage title="SchemeGPT Assistant" />} />
-            </Routes>
-          </main>
-
-          <Footer />
-        </div>
+        </Routes>
       </Router>
     </CartProvider>
     </WishlistProvider>

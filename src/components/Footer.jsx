@@ -53,7 +53,7 @@ const Footer = () => {
             </h4>
             <ul className="flex flex-col gap-4">
               <li><Link to="/join" className="text-earth-300 hover:text-terracotta-400 transition-colors">Join Hastkala</Link></li>
-              <li><Link to="/womencraft" className="text-earth-300 hover:text-terracotta-400 transition-colors">WomenCraft Direct</Link></li>
+              <li><Link to="/craftmark" className="text-earth-300 hover:text-terracotta-400 transition-colors">CraftMark IP Shield</Link></li>
               <li><Link to="/schemegpt" className="text-earth-300 hover:text-terracotta-400 transition-colors flex items-center gap-2">SchemeGPT Access <ArrowUpRight size={14} /></Link></li>
               <li><Link to="/legal" className="text-earth-300 hover:text-terracotta-400 transition-colors">Legal Rights Help</Link></li>
             </ul>
@@ -91,7 +91,6 @@ const Footer = () => {
             &copy; 2026 Hastkala. Built for TechSpire 1.0 Hackathon.
           </p>
           <div className="flex gap-6 text-sm">
-            <Link to="/admin/login" className="text-earth-400 hover:text-earth-200 transition-colors bg-earth-800/50 px-2 py-0.5 rounded border border-earth-700">Admin Portal</Link>
             <Link to="/privacy" className="text-earth-400 hover:text-earth-200 transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="text-earth-400 hover:text-earth-200 transition-colors">Terms of Service</Link>
           </div>

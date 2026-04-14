@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
   role: { type: String, enum: ['buyer', 'artisan', 'admin'], default: 'buyer' },
+  status: { type: String, enum: ['pending', 'active', 'rejected'], default: 'active' },
   isBanned: { type: Boolean, default: false },
   // Artisan profile fields (filled during onboarding)
   location: { type: String },
@@ -29,6 +30,12 @@ const userSchema = new mongoose.Schema({
     }
   ]
 }, { timestamps: true });
+
+// ── Compound & Field Indexes for O(log n) Query Performance ──
+// Optimize Admin dashboard lookups by Role and Account Status
+userSchema.index({ role: 1, status: 1 });
+// The email field is naturally indexed via unique: true, but we explicitly note it:
+// userSchema.index({ email: 1 });
 
 module.exports = mongoose.model('User', userSchema);
 

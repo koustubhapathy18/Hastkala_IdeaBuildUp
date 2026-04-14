@@ -3,24 +3,12 @@ const router = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
-// Middleware to verify JWT and attach user id
-const auth = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'No token provided' });
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'hastkala_secret');
-    req.userId = decoded.id;
-    next();
-  } catch {
-    res.status(401).json({ message: 'Invalid token' });
-  }
-};
+const { verifyAuthContext, verifyArtisan } = require('../middleware/roleCheck');
 
 // GET /api/artisans/me — return logged-in artisan's profile
-router.get('/me', auth, async (req, res) => {
+router.get('/me', verifyAuthContext, verifyArtisan, async (req, res) => {
   try {
-    const user = await User.findById(req.userId).select('-password');
+    const user = await User.findById(req.user.id).select('-password');
     if (!user) return res.status(404).json({ message: 'User not found' });
     res.json(user);
   } catch (err) {
@@ -29,11 +17,11 @@ router.get('/me', auth, async (req, res) => {
 });
 
 // PUT /api/artisans/me — save onboarding profile data
-router.put('/me', auth, async (req, res) => {
+router.put('/me', verifyAuthContext, verifyArtisan, async (req, res) => {
   try {
     const { location, specialty, upi, image } = req.body;
     const updated = await User.findByIdAndUpdate(
-      req.userId,
+      req.user.id,
       { location, specialty, upi, image, isVerified: true },
       { new: true }
     ).select('-password');

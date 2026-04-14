@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
-import { ShieldCheck, IndianRupee, HandHeart, Sparkles } from 'lucide-react';
+import { ShieldCheck, IndianRupee, Sparkles, Fingerprint } from 'lucide-react';
 
 const Features = () => {
   const values = [
@@ -19,10 +19,10 @@ const Features = () => {
       accent: 'forest',
     },
     {
-      id: "womencraft",
-      title: "Empowering Women",
-      description: "Direct Aadhaar payouts so she owns 100% of her financial independence.",
-      icon: <HandHeart size={28} strokeWidth={1} />,
+      id: "craftmark",
+      title: "CraftMark IP Shield",
+      description: "AI bots scan global platforms 24/7 and auto-send legal IP Takedown Notices the moment a copy is detected.",
+      icon: <Fingerprint size={28} strokeWidth={1} />,
       accent: 'earth',
     },
     {
