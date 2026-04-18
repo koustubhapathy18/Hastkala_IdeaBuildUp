@@ -20,9 +20,17 @@ router.get('/me', verifyAuthContext, verifyArtisan, async (req, res) => {
 router.put('/me', verifyAuthContext, verifyArtisan, async (req, res) => {
   try {
     const { location, specialty, upi, image } = req.body;
+    // Only update allowed fields — isVerified is set server-side only
+    const updateFields = {};
+    if (location !== undefined) updateFields.location = location;
+    if (specialty !== undefined) updateFields.specialty = specialty;
+    if (upi !== undefined) updateFields.upi = upi;
+    if (image !== undefined) updateFields.image = image;
+    updateFields.isVerified = true; // Server controls this
+    
     const updated = await User.findByIdAndUpdate(
       req.user.id,
-      { location, specialty, upi, image, isVerified: true },
+      updateFields,
       { new: true }
     ).select('-password');
     res.json(updated);
@@ -31,10 +39,11 @@ router.put('/me', verifyAuthContext, verifyArtisan, async (req, res) => {
   }
 });
 
-// GET /api/artisans — get all artisans (from User model, role=artisan)
+// GET /api/artisans — get all artisans (public listing, safe fields only)
 router.get('/', async (req, res) => {
   try {
-    const artisans = await User.find({ role: 'artisan' }).select('-password');
+    const artisans = await User.find({ role: 'artisan', status: 'active' })
+      .select('name image location specialty isVerified');
     res.json(artisans);
   } catch (err) {
     res.status(500).json({ message: err.message });

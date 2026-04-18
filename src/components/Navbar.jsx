@@ -85,7 +85,7 @@ const Navbar = () => {
             whileTap={{ scale: 0.95 }}
             className="w-12 h-12 overflow-hidden rounded-full shadow-md transition-all duration-300 bg-white"
           >
-            <img src="/hastkala-logo.jpg" alt="Hastkala Logo" className="w-full h-full object-cover" />
+            <img src="/logo.jpeg" alt="Hastkala Logo" className="w-full h-full object-cover" />
           </motion.div>
           <span className={`font-serif text-2xl font-bold tracking-widest uppercase transition-colors duration-500 ${(isScrolled || !isHomePage) ? 'text-earth-900' : 'text-white'}`}>
             Hastkala
@@ -259,7 +259,7 @@ const Navbar = () => {
                 {userRole ? (
                   <>
                     <Link 
-                      to={userRole === 'artisan' ? '/artisan-dashboard' : '/buyer-dashboard'} 
+                      to={userRole === 'artisan' ? '/seller/dashboard' : '/buyer-dashboard'} 
                       onClick={() => setMobileMenuOpen(false)} 
                       className="flex items-center gap-3 text-earth-700 font-bold uppercase tracking-wider text-sm w-full py-4 bg-white justify-center rounded-lg shadow-sm border border-earth-100"
                     >

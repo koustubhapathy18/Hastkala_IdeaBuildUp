@@ -27,6 +27,7 @@ import ScrollToTop from './components/ScrollToTop';
 import ArtisansDirectory from './pages/ArtisansDirectory';
 import Heritage from './pages/Heritage';
 import TruthMark from './pages/TruthMark';
+import ArtisanTruthMark from './pages/ArtisanTruthMark';
 import Wishlist from './pages/Wishlist';
 import CraftMark from './pages/CraftMark';
 
@@ -67,12 +68,30 @@ function App() {
             
             <Route path="/discover" element={<Discover />} />
             <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/cart" element={
+              <ProtectedRoute allowedRoles={['buyer']}>
+                <Cart />
+              </ProtectedRoute>
+            } />
+            <Route path="/checkout" element={
+              <ProtectedRoute allowedRoles={['buyer']}>
+                <Checkout />
+              </ProtectedRoute>
+            } />
             <Route path="/artisans" element={<ArtisansDirectory />} />
             <Route path="/heritage" element={<Heritage />} />
             <Route path="/truthmark" element={<TruthMark />} />
-            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/truthmark/register" element={
+              <ProtectedRoute allowedRoles={['artisan']}>
+                <ArtisanTruthMark />
+              </ProtectedRoute>
+            } />
+            <Route path="/verify/:code" element={<TruthMark />} />
+            <Route path="/wishlist" element={
+              <ProtectedRoute allowedRoles={['buyer']}>
+                <Wishlist />
+              </ProtectedRoute>
+            } />
             <Route path="/craftmark" element={<CraftMark />} />
             <Route path="/schemegpt" element={<PlaceholderPage title="SchemeGPT Assistant" />} />
 

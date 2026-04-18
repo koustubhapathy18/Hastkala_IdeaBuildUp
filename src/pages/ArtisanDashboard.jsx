@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IndianRupee, Package, QrCode, TrendingUp, AlertCircle, Plus, User, X, ImageIcon, CheckCircle2, Sparkles, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { IndianRupee, Package, QrCode, TrendingUp, AlertCircle, Plus, User, X, ImageIcon, CheckCircle2, Sparkles, ChevronRight, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import IPShieldScanner from '../components/IPShieldScanner';
 
 const CATEGORIES = ['Textiles', 'Pottery', 'Decor', 'Paintings', 'Metalwork', 'Jewellery', 'Wood Carving'];
 
@@ -23,6 +24,7 @@ const ArtisanDashboard = () => {
   const [priceAdvice, setPriceAdvice] = useState(null);
   const [isFetchingAdvice, setIsFetchingAdvice] = useState(false);
   const [priceAdviceError, setPriceAdviceError] = useState(null);
+  const [showIPShield, setShowIPShield] = useState(false);
 
   const fetchPriceAdvice = async () => {
     if (!newProduct.category) return;
@@ -178,21 +180,36 @@ const ArtisanDashboard = () => {
               </div>
            </div>
 
-           <button
-             onClick={() => {
-                setIsEditing(false);
-                setEditProductId(null);
-                setPriceAdvice(null);
-                setNewProduct({
-                  title: '', price: '', category: CATEGORIES[0],
-                  material: '', stock: '10', image: '', image2: ''
-                });
-                setShowModal(true);
-             }}
-             className="mt-8 md:mt-0 bg-terracotta-600 hover:bg-terracotta-500 text-white font-bold uppercase tracking-wider px-6 py-3 rounded shadow-lg flex items-center gap-2 transition-colors"
-           >
-              <Plus size={18} /> List New Product
-           </button>
+           <div className="flex items-center gap-3 mt-8 md:mt-0">
+              <button
+                onClick={() => {
+                   setIsEditing(false);
+                   setEditProductId(null);
+                   setPriceAdvice(null);
+                   setNewProduct({
+                     title: '', price: '', category: CATEGORIES[0],
+                     material: '', stock: '10', image: '', image2: '',
+                     workHours: '', complexity: 'medium'
+                   });
+                   setShowModal(true);
+                }}
+                className="bg-terracotta-600 hover:bg-terracotta-500 text-white font-bold uppercase tracking-wider px-6 py-3 rounded shadow-lg flex items-center gap-2 transition-colors"
+              >
+                 <Plus size={18} /> List New Product
+              </button>
+              <button
+                onClick={() => setShowIPShield(true)}
+                className="bg-earth-800 hover:bg-earth-700 text-terracotta-400 font-bold uppercase tracking-wider px-4 py-3 rounded shadow-lg flex items-center gap-2 transition-colors border border-terracotta-900/50"
+              >
+                <ShieldAlert size={18} /> IP Shield
+              </button>
+              <Link
+                to="/truthmark/register"
+                className="bg-forest-600 hover:bg-forest-500 text-white font-bold uppercase tracking-wider px-4 py-3 rounded shadow-lg flex items-center gap-2 transition-colors"
+              >
+                <ShieldCheck size={18} /> TruthMark
+              </Link>
+            </div>
          </div>
        </header>
 
@@ -262,9 +279,24 @@ const ArtisanDashboard = () => {
                          </div>
                          <div>
                            <h4 className="font-bold text-earth-900">{product.title}</h4>
-                           <span className="text-xs font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-200 inline-flex items-center mt-1">
+                           <span className="text-xs font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-200 inline-flex items-center mt-1 mb-1">
                              <IndianRupee size={10} className="mr-0.5"/> {product.price} (You receive 100%)
                            </span>
+                           {product.truthMarkCode ? (
+                             <div className="flex items-center gap-1 text-[10px] font-bold text-forest-700 uppercase tracking-widest mt-1">
+                               <ShieldCheck size={12} /> TruthMark Verified
+                             </div>
+                           ) : (
+                             <div className="mt-1">
+                               <Link
+                                 to="/truthmark/register"
+                                 state={{ product }}
+                                 className="text-[10px] bg-earth-900 text-white px-2 py-1 rounded font-bold uppercase tracking-widest flex items-center w-fit gap-1 hover:bg-earth-800 transition-colors"
+                               >
+                                 <ShieldCheck size={12} /> TruthMark It
+                               </Link>
+                             </div>
+                           )}
                          </div>
                        </div>
                        <div className="flex flex-row md:flex-col gap-6 md:gap-1 text-sm text-earth-600">
@@ -303,7 +335,8 @@ const ArtisanDashboard = () => {
                       setEditProductId(null);
                       setNewProduct({
                         title: '', price: '', category: CATEGORIES[0],
-                        material: '', stock: '10', image: '', image2: ''
+                        material: '', stock: '10', image: '', image2: '',
+                        workHours: '', complexity: 'medium'
                       });
                       setShowModal(true);
                     }}
@@ -611,6 +644,8 @@ const ArtisanDashboard = () => {
                     />
                   </div>
 
+
+
                   <div className="pt-4 flex gap-3">
                     <button
                       type="button"
@@ -717,6 +752,13 @@ const ArtisanDashboard = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      
+      {/* IP Shield Scanner Modal */}
+      <IPShieldScanner 
+        isOpen={showIPShield} 
+        onClose={() => setShowIPShield(false)} 
+        products={products} 
+      />
     </div>
   );
 };

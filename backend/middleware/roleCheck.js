@@ -1,12 +1,18 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
 // We can reuse basic auth header verify here or just rely strictly on req.user created by initial auth
-const verifyAuthContext = (req, res, next) => {
+const verifyAuthContext = async (req, res, next) => {
   const token = req.header('x-auth-token') || (req.header('Authorization') && req.header('Authorization').split(' ')[1]);
   if (!token) return res.status(401).json({ message: 'No token, authorization denied' });
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'hastkala_secret');
-    req.user = decoded; // The payload has id, role, email, status (if we add it, wait, we need 'status')
+    // Re-check banned status from DB (token may be valid but user banned after login)
+    const user = await User.findById(decoded.id).select('isBanned');
+    if (user && user.isBanned) {
+      return res.status(403).json({ message: 'Your account has been suspended.' });
+    }
+    req.user = decoded;
     next();
   } catch (err) {
     res.status(401).json({ message: 'Token is not valid' });

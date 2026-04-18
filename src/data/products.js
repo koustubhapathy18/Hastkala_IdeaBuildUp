@@ -18,7 +18,7 @@ export const products = [
   {
     id: "65a1234567890abcdef00002",
     title: "Gond Painting on Canvas",
-    artisan: "Ramesh Shyam",
+    artisan: "Aman Sharma",
     village: "Patangarh",
     state: "Madhya Pradesh",
     price: 5400,
@@ -130,7 +130,7 @@ export const products = [
   {
     id: "65a1234567890abcdef00009",
     title: "Vintage Terracotta Pottery",
-    artisan: "Ramesh Kumar",
+    artisan: "Rahul Gupta",
     village: "Bishnupur",
     state: "West Bengal",
     price: 3200,

@@ -25,7 +25,7 @@ const sampleProducts = [
   {
     _id: "65a1234567890abcdef00002",
     title: "Gond Painting on Canvas",
-    artisan: "Ramesh Shyam",
+    artisan: "Aman Sharma",
     village: "Patangarh",
     state: "Madhya Pradesh",
     price: 5400,
@@ -133,7 +133,7 @@ const sampleProducts = [
   },
   {
     title: "Bishnupur Terracotta Art Pottery",
-    artisan: "Ramesh Kumar",
+    artisan: "Rahul Gupta",
     village: "Bishnupur",
     state: "West Bengal",
     price: 3200,
@@ -342,6 +342,10 @@ const seedDatabase = async () => {
         ]
       },
       { name: 'Admin User', email: 'admin@hastkala.com', password: await hash('admin123'), role: 'admin' },
+      // Permanent demanded users
+      { name: 'Sam Artisan', email: 'sam@gmail.com', password: await hash('artisan123'), role: 'artisan', status: 'active', isVerified: true },
+      { name: 'Elon Buyer', email: 'elon@gmail.com', password: await hash('elon.123'), role: 'buyer', status: 'active' },
+      { name: 'Koustub Admin', email: 'koustub@hastkala.com', password: await hash('admin.123'), role: 'admin', status: 'active' },
     ]);
 
     // Seed some orders for the demo buyer

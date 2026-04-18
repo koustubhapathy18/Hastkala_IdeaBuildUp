@@ -167,25 +167,52 @@ const ArtisanOnboarding = () => {
                 <p className="text-earth-600 mb-8 text-sm">This is exactly what stops counterfeits. Your identity guarantees the product's value.</p>
                 <div className="space-y-6">
                   <label className="border-2 border-dashed border-earth-300 bg-earth-50 rounded-lg p-8 text-center hover:bg-earth-100 transition-colors cursor-pointer group block">
-                    <input type="file" accept="image/*,.pdf" className="hidden" />
+                    <input 
+                      type="file" 
+                      accept="image/*,.pdf" 
+                      className="hidden" 
+                      onChange={e => updateField('aadhaarFile', e.target.files[0])}
+                    />
                     <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:scale-110 transition-transform">
-                      <Upload className="text-terracotta-500" />
+                      {formData.aadhaarFile ? <CheckCircle2 className="text-green-500" /> : <Upload className="text-terracotta-500" />}
                     </div>
-                    <p className="font-bold text-earth-900 mb-1">Government ID (Aadhaar)</p>
-                    <p className="text-xs text-earth-500 uppercase tracking-wider">Click to browse or drag and drop</p>
+                    <p className="font-bold text-earth-900 mb-1">
+                      {formData.aadhaarFile ? formData.aadhaarFile.name : 'Government ID (Aadhaar)'}
+                    </p>
+                    <p className="text-xs text-earth-500 uppercase tracking-wider">
+                      {formData.aadhaarFile ? 'Click to change file' : 'Click to browse or drag and drop'}
+                    </p>
                   </label>
                   <label className="border-2 border-dashed border-earth-300 bg-earth-50 rounded-lg p-8 text-center hover:bg-earth-100 transition-colors cursor-pointer group block">
-                    <input type="file" accept="image/*" className="hidden" />
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden" 
+                      onChange={e => updateField('photoFile', e.target.files[0])}
+                    />
                     <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:scale-110 transition-transform">
-                      <Upload className="text-forest-500" />
+                      {formData.photoFile ? <CheckCircle2 className="text-green-500" /> : <Upload className="text-forest-500" />}
                     </div>
-                    <p className="font-bold text-earth-900 mb-1">A Photo of You Working</p>
-                    <p className="text-xs text-earth-500 uppercase tracking-wider">This will be shown on TruthMark QR scans</p>
+                    <p className="font-bold text-earth-900 mb-1">
+                      {formData.photoFile ? formData.photoFile.name : 'A Photo of You Working'}
+                    </p>
+                    <p className="text-xs text-earth-500 uppercase tracking-wider">
+                      {formData.photoFile ? 'Click to change photo' : 'This will be shown on TruthMark QR scans'}
+                    </p>
                   </label>
                 </div>
-                <div className="mt-10 flex justify-between">
-                  <button onClick={() => { setError(''); setStep(step - 1); }} className="text-earth-600 font-bold uppercase tracking-wider px-6 py-3 hover:bg-earth-100 rounded transition-colors">Back</button>
-                  <button onClick={handleNext} className="bg-earth-900 text-white px-8 py-3 rounded font-bold uppercase tracking-wider hover:bg-terracotta-700 transition-colors">Upload & Continue</button>
+                <div className="mt-10 flex flex-col gap-3">
+                  {error && <p className="text-red-500 text-sm font-medium text-right">{error}</p>}
+                  <div className="flex justify-between w-full">
+                    <button onClick={() => { setError(''); setStep(step - 1); }} className="text-earth-600 font-bold uppercase tracking-wider px-6 py-3 hover:bg-earth-100 rounded transition-colors">Back</button>
+                    <button onClick={() => {
+                      if (!formData.aadhaarFile || !formData.photoFile) {
+                        setError('Please upload both required documents.');
+                        return;
+                      }
+                      handleNext();
+                    }} className="bg-earth-900 text-white px-8 py-3 rounded font-bold uppercase tracking-wider hover:bg-terracotta-700 transition-colors">Upload & Continue</button>
+                  </div>
                 </div>
               </motion.div>
             )}

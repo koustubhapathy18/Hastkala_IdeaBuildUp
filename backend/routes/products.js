@@ -21,21 +21,23 @@ router.get('/', async (req, res, next) => {
       query.category = category;
     }
     if (search) {
+      // Escape special regex characters to prevent ReDoS attacks
+      const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       // Powerful startup-style search across multiple fields
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { category: { $regex: search, $options: 'i' } },
-        { artisan: { $regex: search, $options: 'i' } },
-        { material: { $regex: search, $options: 'i' } }
+        { title: { $regex: escapedSearch, $options: 'i' } },
+        { category: { $regex: escapedSearch, $options: 'i' } },
+        { artisan: { $regex: escapedSearch, $options: 'i' } },
+        { material: { $regex: escapedSearch, $options: 'i' } }
       ];
     }
     
     const pageNum = Math.max(1, parseInt(page) || 1);
-    const limitNum = Math.max(1, parseInt(limit) || 12);
+    const limitNum = Math.max(1, parseInt(limit) || 50);
     const skipNum = (pageNum - 1) * limitNum;
 
     const [products, totalItems] = await Promise.all([
-      Product.find(query).skip(skipNum).limit(limitNum).lean(),
+      Product.find(query).sort({ createdAt: -1 }).skip(skipNum).limit(limitNum).lean(),
       Product.countDocuments(query)
     ]);
     

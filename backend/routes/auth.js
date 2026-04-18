@@ -21,7 +21,8 @@ const auth = (req, res, next) => {
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    let { name, email, password, role } = req.body;
+    email = email.toLowerCase().trim();
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -50,8 +51,8 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
-    const { email, password, role } = req.body;
-
+    let { email, password, role } = req.body;
+    email = email.toLowerCase().trim();
     // Find user in DB by email
     const user = await User.findOne({ email });
     if (!user) {

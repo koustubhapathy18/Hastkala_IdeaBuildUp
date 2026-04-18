@@ -9,12 +9,17 @@ const productRoutes = require('./routes/products');
 const artisanRoutes = require('./routes/artisans');
 const orderRoutes = require('./routes/orders');
 const adminRoutes = require('./routes/admin');
+const truthmarkRoutes = require('./routes/truthmark');
+const ipshieldRoutes = require('./routes/ipshield');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 
 // ── 1. Secure HTTP Headers ──
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 
 // ── 2. DDoS Protection (Rate Limiting) ──
 // Limit each IP to 200 API requests per 15 minutes
@@ -46,6 +51,13 @@ app.use('/api/products', productRoutes);
 app.use('/api/artisans', artisanRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/truthmark', truthmarkRoutes);
+app.use('/api/verify', truthmarkRoutes);
+app.use('/api/ipshield', ipshieldRoutes);
+
+// Serve static files for QR codes and uploads
+app.use('/qrcodes', express.static(path.join(__dirname, 'qrcodes')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/', (req, res) => {
   res.send('Hastkala API is running...');

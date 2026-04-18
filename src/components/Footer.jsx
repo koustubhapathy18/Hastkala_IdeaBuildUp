@@ -11,7 +11,7 @@ const Footer = () => {
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-3 mb-6 group">
               <div className="w-12 h-12 rounded-full overflow-hidden shadow-lg border-2 border-terracotta-600 group-hover:border-terracotta-400 transition-colors bg-white flex items-center justify-center">
-                <img src="/hastkala-logo.jpg" alt="Hastkala Logo" className="w-full h-full object-cover" />
+                <img src="/logo.jpeg" alt="Hastkala Logo" className="w-full h-full object-cover" />
               </div>
               <span className="font-serif text-3xl font-bold tracking-wider text-earth-50">
                 HASTKALA

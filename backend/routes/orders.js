@@ -18,9 +18,13 @@ const auth = (req, res, next) => {
 };
 
 
-// POST create order
-router.post('/', async (req, res) => {
+// POST create order (buyers only)
+router.post('/', auth, async (req, res) => {
   try {
+    if (req.user.role !== 'buyer') {
+      return res.status(403).json({ message: 'Only buyers can place orders' });
+    }
+
     const { customerInfo, items, totalAmount } = req.body;
 
     // --- Stock Validation ---
@@ -44,6 +48,7 @@ router.post('/', async (req, res) => {
     }
 
     const newOrder = new Order({
+      user: req.user.id,
       customerInfo,
       items,
       totalAmount
@@ -69,10 +74,12 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
-// GET all orders (for admin)
-router.get('/', async (req, res) => {
-
+// GET all orders (for admin only)
+router.get('/', auth, async (req, res) => {
   try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Admin access required' });
+    }
     const orders = await Order.find();
     res.json(orders);
   } catch (err) {

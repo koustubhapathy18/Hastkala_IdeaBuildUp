@@ -240,11 +240,11 @@ const ProductGrid = () => {
                                   <div className="space-y-4 text-[13px] font-light">
                                     <div className="flex justify-between items-center text-forest-300 border-b border-white/5 pb-2">
                                       <span>Direct Earnings</span>
-                                      <span className="flex items-center font-bold text-base"><IndianRupee size={14}/>{(product.price - Math.round(product.price * 0.035)).toLocaleString('en-IN')}</span>
+                                      <span className="flex items-center font-bold text-base"><IndianRupee size={14}/>{(product.price - Math.round(product.price * 0.075)).toLocaleString('en-IN')}</span>
                                     </div>
                                     <div className="flex justify-between items-center text-earth-300 border-b border-white/5 pb-2">
-                                      <span>Platform Fee (3.5%)</span>
-                                      <span className="flex items-center"><IndianRupee size={12}/>{Math.round(product.price * 0.035).toLocaleString('en-IN')}</span>
+                                      <span>Platform Fee (7.5%)</span>
+                                      <span className="flex items-center"><IndianRupee size={12}/>{Math.round(product.price * 0.075).toLocaleString('en-IN')}</span>
                                     </div>
                                     <div className="flex justify-between items-center text-white/80">
                                       <span>Total You Pay</span>
@@ -253,7 +253,7 @@ const ProductGrid = () => {
                                   </div>
                                   <div className="mt-4 bg-white/5 rounded px-3 py-2">
                                     <p className="text-[10px] text-earth-400 leading-relaxed">
-                                      <span className="text-terracotta-300 font-bold">{Math.round(((product.price - Math.round(product.price * 0.035)) / product.price) * 100)}%</span> of every rupee goes directly to the artisan.
+                                      <span className="text-terracotta-300 font-bold">{Math.round(((product.price - Math.round(product.price * 0.075)) / product.price) * 100)}%</span> of every rupee goes directly to the artisan.
                                     </p>
                                   </div>
                                  <div className="mt-6 pt-4 border-t border-white/10 text-center">

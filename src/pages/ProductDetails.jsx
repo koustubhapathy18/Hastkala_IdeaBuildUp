@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
@@ -101,6 +101,17 @@ const ProductDetails = () => {
   const [added, setAdded] = useState(false);
   const [buyingNow, setBuyingNow] = useState(false);
 
+  // Role check: hide buy actions for artisans
+  const { userRole, userName } = useMemo(() => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return { userRole: null, userName: null };
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return { userRole: payload.role, userName: payload.name };
+    } catch { return { userRole: null, userName: null }; }
+  }, []);
+  const isBuyer = userRole !== 'artisan' && userRole !== 'admin';
+
   useEffect(() => {
     // Try API first, fall back to local data
     fetch(`/api/products/${id}`)
@@ -149,8 +160,8 @@ const ProductDetails = () => {
   const productId = product._id || product.id;
   const wishlisted = isWishlisted(productId);
 
-  // PriceMirror: 3.5% platform fee, rest goes to artisan
-  const platformFee = Math.round(product.price * 0.035);
+  // PriceMirror: 7.5% platform fee, rest goes to artisan
+  const platformFee = Math.round(product.price * 0.075);
   const artisanEarning = product.price - platformFee;
 
   const handleAddToCart = () => {
@@ -210,10 +221,15 @@ const ProductDetails = () => {
                 />
               </AnimatePresence>
               
-              {product.authentic && (
+              {product.truthMarkCode ? (
+                <Link to={`/verify/${product.truthMarkCode}`} className="absolute top-6 left-6 glass-effect px-4 py-2 rounded-full flex items-center gap-2 shadow-lg hover:bg-white transition-colors border border-forest-200">
+                  <ShieldCheck size={16} className="text-forest-600" />
+                  <span className="text-[10px] font-bold tracking-wider text-forest-800 uppercase">TruthMark Verified</span>
+                </Link>
+              ) : product.authentic && (
                 <div className="absolute top-6 left-6 glass-effect px-4 py-2 rounded-full flex items-center gap-2 shadow-lg">
-                  <ShieldCheck size={16} className="text-forest-700" />
-                  <span className="text-[10px] font-bold tracking-wider text-forest-900 uppercase">TruthMark Verified</span>
+                  <ShieldCheck size={16} className="text-earth-600" />
+                  <span className="text-[10px] font-bold tracking-wider text-earth-800 uppercase">Artisan Authentic</span>
                 </div>
               )}
               
@@ -282,7 +298,7 @@ const ProductDetails = () => {
                   <span className="text-lg font-bold flex items-center"><IndianRupee size={16}/>{artisanEarning.toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex justify-between items-center pb-2 border-b border-earth-700/50 text-earth-400">
-                  <span>Platform Fee (3.5%)</span>
+                  <span>Platform Fee (7.5%)</span>
                   <span className="flex items-center text-terracotta-400"><IndianRupee size={14}/>{platformFee.toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex justify-between items-center pt-1">
@@ -391,78 +407,115 @@ const ProductDetails = () => {
               A 100% handcrafted masterpiece made by traditional artisans using age-old techniques passed down through generations. Every purchase goes <strong className="text-earth-800">directly to the maker</strong> — no middlemen, no markups.
             </p>
 
-            {/* ── Action Buttons: Add to Bag + Buy Now ── */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-6">
-              {/* Add to Bag */}
-              <motion.button 
-                whileTap={{ scale: 0.97 }}
-                onClick={handleAddToCart}
-                className={`flex-1 px-8 py-4 font-bold uppercase tracking-widest rounded-xl shadow-lg flex items-center justify-center gap-3 text-sm transition-all duration-300 ${
-                  added 
-                    ? 'bg-forest-700 text-white' 
-                    : 'bg-earth-900 text-white hover:bg-earth-700'
-                }`}
-              >
-                <ShoppingBag size={18} /> {added ? '✓ Added to Bag!' : 'Add to Bag'}
-              </motion.button>
-
-              {/* Buy Now */}
-              <motion.button
-                whileTap={{ scale: 0.97 }}
-                onClick={handleBuyNow}
-                disabled={buyingNow}
-                className="flex-1 px-8 py-4 font-bold uppercase tracking-widest rounded-xl shadow-lg flex items-center justify-center gap-3 text-sm bg-terracotta-600 text-white hover:bg-terracotta-700 transition-all duration-300 disabled:opacity-70 relative overflow-hidden"
-              >
-                <Zap size={18} />
-                {buyingNow ? 'Redirecting…' : 'Buy Now'}
-                {!buyingNow && (
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 opacity-60">
-                    <ArrowRight size={16} />
-                  </span>
-                )}
-              </motion.button>
-            </div>
-
-            {/* Wishlist CTA strip */}
-            <button
-              onClick={handleToggleWishlist}
-              className={`flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border text-sm font-semibold mb-8 transition-all duration-300 ${
-                wishlisted
-                  ? 'border-terracotta-300 bg-terracotta-50 text-terracotta-700'
-                  : 'border-earth-200 bg-white text-earth-600 hover:border-terracotta-300 hover:text-terracotta-600'
-              }`}
-            >
-              <Heart size={16} className={wishlisted ? 'fill-terracotta-600 text-terracotta-600' : ''} />
-              {wishlisted ? 'Saved to Wishlist' : 'Save to Wishlist'}
-            </button>
-
-            {/* ── Offer Details Section ── */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Tag size={16} className="text-terracotta-600" />
-                <h3 className="text-sm font-bold uppercase tracking-widest text-earth-800">Available Offers</h3>
-              </div>
-              <div className="space-y-2">
-                {OFFERS.map((offer, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.07 }}
-                    className={`flex items-start gap-3 p-3.5 rounded-xl border ${offer.bg}`}
+            {/* ── Action Buttons: Add to Bag + Buy Now (Buyers Only) ── */}
+            {isBuyer ? (
+              <>
+                <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                  {/* Add to Bag */}
+                  <motion.button 
+                    whileTap={{ scale: 0.97 }}
+                    onClick={handleAddToCart}
+                    className={`flex-1 px-8 py-4 font-bold uppercase tracking-widest rounded-xl shadow-lg flex items-center justify-center gap-3 text-sm transition-all duration-300 ${
+                      added 
+                        ? 'bg-forest-700 text-white' 
+                        : 'bg-earth-900 text-white hover:bg-earth-700'
+                    }`}
                   >
-                    <div className="mt-0.5 shrink-0">{offer.icon}</div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-earth-900 leading-tight">{offer.title}</p>
-                      <p className="text-[11px] text-earth-500 mt-0.5 leading-relaxed">{offer.sub}</p>
+                    <ShoppingBag size={18} /> {added ? '✓ Added to Bag!' : 'Add to Bag'}
+                  </motion.button>
+
+                  {/* Buy Now */}
+                  <motion.button
+                    whileTap={{ scale: 0.97 }}
+                    onClick={handleBuyNow}
+                    disabled={buyingNow}
+                    className="flex-1 px-8 py-4 font-bold uppercase tracking-widest rounded-xl shadow-lg flex items-center justify-center gap-3 text-sm bg-terracotta-600 text-white hover:bg-terracotta-700 transition-all duration-300 disabled:opacity-70 relative overflow-hidden"
+                  >
+                    <Zap size={18} />
+                    {buyingNow ? 'Redirecting…' : 'Buy Now'}
+                    {!buyingNow && (
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 opacity-60">
+                        <ArrowRight size={16} />
+                      </span>
+                    )}
+                  </motion.button>
+                </div>
+
+                {/* Wishlist CTA strip */}
+                <button
+                  onClick={handleToggleWishlist}
+                  className={`flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border text-sm font-semibold mb-8 transition-all duration-300 ${
+                    wishlisted
+                      ? 'border-terracotta-300 bg-terracotta-50 text-terracotta-700'
+                      : 'border-earth-200 bg-white text-earth-600 hover:border-terracotta-300 hover:text-terracotta-600'
+                  }`}
+                >
+                  <Heart size={16} className={wishlisted ? 'fill-terracotta-600 text-terracotta-600' : ''} />
+                  {wishlisted ? 'Saved to Wishlist' : 'Save to Wishlist'}
+                </button>
+
+                {/* ── Offer Details Section ── */}
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Tag size={16} className="text-terracotta-600" />
+                    <h3 className="text-sm font-bold uppercase tracking-widest text-earth-800">Available Offers</h3>
+                  </div>
+                  <div className="space-y-2">
+                    {OFFERS.map((offer, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.07 }}
+                        className={`flex items-start gap-3 p-3.5 rounded-xl border ${offer.bg}`}
+                      >
+                        <div className="mt-0.5 shrink-0">{offer.icon}</div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-earth-900 leading-tight">{offer.title}</p>
+                          <p className="text-[11px] text-earth-500 mt-0.5 leading-relaxed">{offer.sub}</p>
+                        </div>
+                        <span className={`shrink-0 text-[9px] font-bold tracking-widest px-2 py-1 rounded-md ${offer.badgeBg}`}>
+                          {offer.badge}
+                        </span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="mb-8 bg-amber-50 border border-amber-200 rounded-2xl p-5">
+                {userRole === 'artisan' && userName && product.artisan?.toLowerCase() === userName.toLowerCase() ? (
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <ShieldCheck size={20} className="text-forest-600" />
+                      <p className="text-sm font-bold text-forest-800">Your Product — Seller View</p>
                     </div>
-                    <span className={`shrink-0 text-[9px] font-bold tracking-widest px-2 py-1 rounded-md ${offer.badgeBg}`}>
-                      {offer.badge}
-                    </span>
-                  </motion.div>
-                ))}
+                    <p className="text-xs text-earth-600 leading-relaxed mb-4">This is how buyers see your listing. You can manage it from your dashboard.</p>
+                    <div className="flex flex-wrap gap-2">
+                      <Link to="/seller/dashboard" className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-earth-900 hover:bg-earth-700 px-4 py-2.5 rounded-lg transition-colors uppercase tracking-wider">
+                        <ArrowRight size={14} /> My Dashboard
+                      </Link>
+                      {!product.truthMarkCode && (
+                        <Link to="/truthmark/register" state={{ product }} className="inline-flex items-center gap-1.5 text-xs font-bold text-forest-800 bg-forest-100 hover:bg-forest-200 px-4 py-2.5 rounded-lg transition-colors uppercase tracking-wider">
+                          <ShieldCheck size={14} /> TruthMark It
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-start gap-3">
+                    <AlertCircle size={20} className="text-amber-600 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-bold text-amber-800 mb-1">Seller Preview Mode</p>
+                      <p className="text-xs text-amber-700 leading-relaxed">This is how buyers see this product. Purchase options are only available for buyer accounts.</p>
+                      <Link to="/seller/dashboard" className="inline-flex items-center gap-1.5 mt-3 text-xs font-bold text-amber-800 bg-amber-100 hover:bg-amber-200 px-4 py-2 rounded-lg transition-colors uppercase tracking-wider">
+                        <ArrowRight size={14} /> Go to Dashboard
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
+            )}
 
             {/* ── Tabbed Detail Sections ── */}
             <div className="border border-earth-200 rounded-2xl overflow-hidden mb-6">
@@ -493,7 +546,9 @@ const ProductDetails = () => {
                         { icon: <Clock size={16}/>, label: 'Crafting Time', value: profile.time },
                         { icon: <Package size={16}/>, label: 'Weight', value: profile.weight },
                         { icon: <Award size={16}/>, label: 'Origin State', value: product.state },
-                        { icon: <ShieldCheck size={16}/>, label: 'Authenticity', value: 'GI & TruthMark' },
+                        { icon: <ShieldCheck size={16}/>, label: 'Authenticity', value: product.truthMarkCode ? (
+                          <Link to={`/verify/${product.truthMarkCode}`} className="text-forest-700 hover:underline flex items-center gap-1 border border-forest-200 px-2 py-0.5 rounded w-fit"><ShieldCheck size={12}/> Verified</Link>
+                        ) : 'GI Tagged' },
                         { icon: <span>🧑‍🎨</span>, label: 'Made By', value: product.artisan },
                       ].map(({ icon, label, value }) => (
                         <div key={label} className="bg-earth-50 rounded-xl p-4 border border-earth-100">

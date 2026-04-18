@@ -18,7 +18,9 @@ const productSchema = new mongoose.Schema({
     platformFee: { type: Number },
     middleman: { type: Number }
   },
-  stock: { type: Number, default: 10 }
+  stock: { type: Number, default: 10 },
+  createdAt: { type: Date, default: Date.now },
+  truthMarkCode: { type: String, default: null }
 }, { timestamps: true });
 
 // ── Compound & Text Indexes for O(log n) Query Performance ──
@@ -28,6 +30,6 @@ productSchema.index({ price: 1 });
 productSchema.index({ isBestseller: -1 });
 
 // Add a generic Text Index for powerful future full-text search capabilities
-productSchema.index({ title: 'text', description: 'text', artisan: 'text', material: 'text' });
+productSchema.index({ title: 'text', artisan: 'text', material: 'text' });
 
 module.exports = mongoose.model('Product', productSchema);
