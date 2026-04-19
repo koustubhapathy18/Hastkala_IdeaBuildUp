@@ -323,7 +323,7 @@ const TruthMark = () => {
                           width="100%"
                           height="300"
                           loading="lazy"
-                          src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${searchResult.village ? encodeURIComponent(searchResult.village + ', India') : `${searchResult.gpsCoords.lat},${searchResult.gpsCoords.lng}`}&zoom=12`}
+                          src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&q=${searchResult.village ? encodeURIComponent(searchResult.village + ', India') : `${searchResult.gpsCoords.lat},${searchResult.gpsCoords.lng}`}&zoom=12`}
                           className="w-full"
                         ></iframe>
                       </div>
