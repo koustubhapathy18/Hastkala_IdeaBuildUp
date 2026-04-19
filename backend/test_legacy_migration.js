@@ -3,8 +3,13 @@ const axios = require('axios');
 const FormData = require('form-data');
 const Product = require('./models/Product');
 
+require('dotenv').config();
+
 async function run() {
-  await mongoose.connect('mongodb+srv://theaispirehub_db_user:gK3dTEiABSL3wzlE@kalavithi.6lnhk5t.mongodb.net/hastkala?retryWrites=true&w=majority&appName=Kalavithi');
+  if (!process.env.MONGO_URI) {
+    throw new Error('MONGO_URI must be provided in the .env file');
+  }
+  await mongoose.connect(process.env.MONGO_URI);
   console.log('Connected to MongoDB');
 
   // Create a dummy product
